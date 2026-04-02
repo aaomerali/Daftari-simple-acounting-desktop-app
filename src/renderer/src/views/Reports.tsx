@@ -84,7 +84,7 @@ export default function Reports() {
              ) : salesReport.map(s => (
                <tr key={s.id} className="hover:bg-slate-50/50">
                  <td className="px-6 py-4 font-bold text-slate-700">#{s.id}</td>
-                 <td className="px-6 py-4 text-slate-600">{new Date(s.date).toLocaleDateString('ar-SA')} - {new Date(s.date).toLocaleTimeString('ar-SA')}</td>
+                 <td className="px-6 py-4 text-slate-600">{new Date(s.date).toLocaleDateString('en-GB')} - {new Date(s.date).toLocaleTimeString('en-GB')}</td>
                  <td className="px-6 py-4">{s.customer_name || 'عميل نقدي'}</td>
                  <td className="px-6 py-4 font-bold text-blue-600">{s.total.toFixed(2)} {currencySymbol}</td>
                  <td className="px-6 py-4 text-slate-500">
@@ -124,7 +124,7 @@ export default function Reports() {
                   {/* Receipt Info */}
                   <div className="border-b border-dashed border-slate-300 pb-3 mb-3 text-xs space-y-1">
                     <div className="flex justify-between"><span>رقم الفاتورة:</span> <strong>#{selectedInvoice.id}</strong></div>
-                    <div className="flex justify-between"><span>التاريخ:</span> <strong>{new Date(selectedInvoice.date).toLocaleString('ar-SA')}</strong></div>
+                    <div className="flex justify-between"><span>التاريخ:</span> <strong>{new Date(selectedInvoice.date).toLocaleString('en-GB')}</strong></div>
                     <div className="flex justify-between"><span>العميل:</span> <strong>{selectedInvoice.customer_name || 'عميل نقدي'}</strong></div>
                     <div className="flex justify-between">
                       <span>طريقة الدفع:</span> 

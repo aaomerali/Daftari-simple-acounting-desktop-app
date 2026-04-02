@@ -75,7 +75,7 @@ export default function Dashboard() {
         <div className="text-sm text-slate-500 bg-white px-4 py-2 rounded shadow-sm border border-slate-100 flex items-center gap-2">
           <span>تحديث مباشر</span>
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          &middot; {new Date().toLocaleDateString('ar-SA')}
+          &middot; {new Date().toLocaleDateString('en-GB')}
         </div>
       </div>
 
