@@ -63,7 +63,7 @@ export default function Reports() {
       </style>
 
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">قائمة الفواتير السابقة</h1>
+        <h1 className="text-3xl font-bold text-slate-800">سجل المبيعات والفواتير</h1>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
@@ -179,11 +179,10 @@ export default function Reports() {
                </div>
             </div>
 
-            {/* Modal Footer / Actions */}
             <div className="p-4 border-t border-slate-100 flex justify-end gap-3 no-print bg-white">
               <button onClick={closeInvoice} className="px-5 py-2 font-medium text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg">إغلاق</button>
               <button onClick={printInvoice} className="px-5 py-2 font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center gap-2">
-                <Printer className="w-5 h-5" /> طباعة الإيصال
+                <Printer className="w-5 h-5" /> طباعة أو حفظ كـ PDF
               </button>
             </div>
           </div>

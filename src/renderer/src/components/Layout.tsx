@@ -13,6 +13,7 @@ import Sales from '../views/Sales'
 import Purchases from '../views/Purchases'
 import Expenses from '../views/Expenses'
 import Reports from '../views/Reports'
+import Invoices from '../views/Invoices'
 
 export default function Layout() {
   const fetchSettings = useSettingsStore(state => state.fetchSettings)
@@ -29,11 +30,12 @@ export default function Layout() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/sales" element={<Sales />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/invoices" element={<Invoices />} />
           <Route path="/purchases" element={<Purchases />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/expenses" element={<Expenses />} />
-          <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<SettingsView />} />
         </Routes>
       </main>

@@ -9,12 +9,13 @@ export default function Sidebar() {
   const navItems = [
     { path: '/', label: 'لوحة التحكم', icon: LayoutDashboard },
     { path: '/products', label: 'المنتجات والمخزون', icon: Package },
-    { path: '/sales', label: 'المبيعات', icon: ShoppingCart },
+    { path: '/sales', label: 'نقطة البيع', icon: ShoppingCart },
+    { path: '/reports', label: 'المبيعات', icon: FileText },
+    { path: '/invoices', label: 'الفواتير', icon: Receipt },
     { path: '/purchases', label: 'المشتريات', icon: Truck },
     { path: '/customers', label: 'العملاء', icon: Users },
     { path: '/suppliers', label: 'الموردون', icon: Truck },
     { path: '/expenses', label: 'المصروفات', icon: Receipt },
-    { path: '/reports', label: 'التقارير', icon: FileText },
     { path: '/settings', label: 'الإعدادات', icon: Settings }
   ]
 
