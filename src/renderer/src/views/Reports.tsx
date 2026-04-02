@@ -49,18 +49,9 @@ export default function Reports() {
   }
 
   return (
-    <div className="p-8">
-      {/* Inline styles for printing capability */}
-      <style>
-        {`
-          @media print {
-            body * { visibility: hidden; }
-            #invoice-print-area, #invoice-print-area * { visibility: visible; }
-            #invoice-print-area { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
-            .no-print { display: none !important; }
-          }
-        `}
-      </style>
+    <div className="p-8 print:p-0">
+      {/* Container for main UI that should be hidden during modal print */}
+      <div className={selectedInvoice ? 'print:hidden' : ''}>
 
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-slate-800">سجل المبيعات والفواتير</h1>
@@ -100,21 +91,22 @@ export default function Reports() {
            </tbody>
         </table>
       </div>
+      </div>
 
       {/* Invoice Modal */}
       {selectedInvoice && (
-        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col no-print">
+        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4 print:static print:bg-transparent print:p-0 print:block">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col print:shadow-none print:border-0 print:max-h-max print:max-w-none">
             
             {/* Modal Header */}
-            <div className="flex justify-between items-center p-4 border-b border-slate-100">
+            <div className="flex justify-between items-center p-4 border-b border-slate-100 print:hidden">
                <h2 className="text-lg font-bold">تفاصيل الفاتورة #{selectedInvoice.id}</h2>
                <button onClick={closeInvoice} className="p-2 hover:bg-slate-100 rounded-full text-slate-500"><X className="w-5 h-5"/></button>
             </div>
 
             {/* Modal Body / Print Area */}
-            <div className="p-8 overflow-y-auto flex-1 bg-slate-50 flex justify-center">
-               <div id="invoice-print-area" className="bg-white p-8 w-[80mm] min-w-[350px] shadow-sm border border-slate-200 text-slate-800 text-sm">
+            <div className="p-8 overflow-y-auto flex-1 bg-slate-50 flex justify-center print:p-0 print:overflow-visible print:bg-white print:block">
+               <div id="invoice-print-area" className="bg-white p-8 w-[80mm] min-w-[350px] shadow-sm border border-slate-200 text-slate-800 text-sm print:w-full print:max-w-xl print:mx-auto print:border-0 print:shadow-none print:p-0">
                   {/* Receipt Header */}
                   <div className="text-center mb-6">
                     <h2 className="text-xl font-bold">{storeName || appName}</h2>
@@ -179,7 +171,8 @@ export default function Reports() {
                </div>
             </div>
 
-            <div className="p-4 border-t border-slate-100 flex justify-end gap-3 no-print bg-white">
+            {/* Modal Footer / Actions */}
+            <div className="p-4 border-t border-slate-100 flex justify-end gap-3 print:hidden bg-white">
               <button onClick={closeInvoice} className="px-5 py-2 font-medium text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg">إغلاق</button>
               <button onClick={printInvoice} className="px-5 py-2 font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center gap-2">
                 <Printer className="w-5 h-5" /> طباعة أو حفظ كـ PDF

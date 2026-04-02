@@ -23,9 +23,9 @@ export default function Layout() {
   }, [fetchSettings])
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 border-slate-200">
+    <div className="flex h-screen bg-slate-50 text-slate-900 border-slate-200 print:block print:h-auto print:bg-white text-right" dir="rtl">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto print:overflow-visible print:bg-white text-slate-900">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />

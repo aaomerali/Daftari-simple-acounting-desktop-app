@@ -20,7 +20,7 @@ export default function Sidebar() {
   ]
 
   return (
-    <div className="w-64 bg-slate-900 border-l border-slate-800 text-white h-screen flex flex-col">
+    <div className="w-64 bg-slate-900 border-l border-slate-800 text-white h-screen flex flex-col print:hidden shrink-0">
       <div className="p-6 text-2xl font-bold border-b border-slate-800 flex items-center justify-center text-blue-400">
         {appName}
       </div>
