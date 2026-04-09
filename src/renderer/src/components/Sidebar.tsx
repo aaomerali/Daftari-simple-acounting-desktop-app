@@ -5,13 +5,13 @@ import { useSettingsStore } from '../store/settingsStore'
 export default function Sidebar() {
   const location = useLocation()
   const appName = useSettingsStore(state => state.appName)
-  
+
   const navItems = [
     { path: '/', label: 'لوحة التحكم', icon: LayoutDashboard },
-    { path: '/products', label: 'المنتجات والمخزون', icon: Package },
     { path: '/sales', label: 'نقطة البيع', icon: ShoppingCart },
     { path: '/reports', label: 'المبيعات', icon: FileText },
     { path: '/invoices', label: 'الفواتير', icon: Receipt },
+    { path: '/products', label: 'المنتجات والمخزون', icon: Package },
     { path: '/purchases', label: 'المشتريات', icon: Truck },
     { path: '/customers', label: 'العملاء', icon: Users },
     { path: '/suppliers', label: 'الموردون', icon: Truck },
@@ -32,11 +32,10 @@ export default function Sidebar() {
               <li key={item.path}>
                 <Link
                   to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <span>{item.label}</span>
