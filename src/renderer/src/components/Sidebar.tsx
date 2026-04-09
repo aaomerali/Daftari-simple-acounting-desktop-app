@@ -1,10 +1,12 @@
-import { LayoutDashboard, Package, ShoppingCart, Truck, Users, Receipt, FileText, Settings } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Truck, Users, Receipt, FileText, Settings, LogOut } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSettingsStore } from '../store/settingsStore'
+import { useAuthStore } from '../store/authStore'
 
 export default function Sidebar() {
   const location = useLocation()
   const appName = useSettingsStore(state => state.appName)
+  const logout = useAuthStore(state => state.logout)
 
   const navItems = [
     { path: '/', label: 'لوحة التحكم', icon: LayoutDashboard },
@@ -45,8 +47,17 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
-      <div className="p-4 border-t border-slate-800 text-center text-xs text-slate-500">
-        الإصدار 1.0.0
+      <div className="p-4 border-t border-slate-800 shrink-0">
+        <button
+          onClick={logout}
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors font-medium mb-3"
+        >
+          <LogOut className="w-5 h-5" />
+          <span>تسجيل الخروج</span>
+        </button>
+        <div className="text-center text-xs text-slate-600">
+          الإصدار 1.0.0
+        </div>
       </div>
     </div>
   )

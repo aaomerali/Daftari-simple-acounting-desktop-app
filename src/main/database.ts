@@ -2,6 +2,7 @@ import Database from 'better-sqlite3'
 import { app } from 'electron'
 import { join } from 'path'
 import fs from 'fs'
+import crypto from 'crypto'
 
 const isDev = !app.isPackaged
 
@@ -47,6 +48,27 @@ function initSchema() {
       INSERT INTO settings (app_name, currency_code, currency_symbol, currency_decimal_places)
       VALUES ('دفتري', 'SAR', 'ر.س', 2)
     `).run()
+  }
+
+  // Users
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      name TEXT NOT NULL,
+      role TEXT DEFAULT 'admin'
+    )
+  `).run()
+
+  // Seed default admin user
+  const usersCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number }
+  if (usersCount.count === 0) {
+    const defaultPasswordHash = crypto.createHash('sha256').update('daftari123').digest('hex')
+    db.prepare(`
+      INSERT INTO users (email, password_hash, name, role)
+      VALUES ('admin@daftari.com', ?, 'مدير النظام', 'admin')
+    `).run(defaultPasswordHash)
   }
 
   // Categories

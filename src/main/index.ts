@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import crypto from 'crypto'
 
 function createWindow(): void {
   // Create the browser window.
@@ -59,6 +60,7 @@ app.whenReady().then(() => {
   ipcMain.handle('db:query', (_, query, params) => executeQuery(query, params))
   ipcMain.handle('db:run', (_, query, params) => executeRun(query, params))
   ipcMain.handle('db:get', (_, query, params) => executeGet(query, params))
+  ipcMain.handle('auth:hash', (_, pwd) => crypto.createHash('sha256').update(pwd).digest('hex'))
 
   createWindow()
 

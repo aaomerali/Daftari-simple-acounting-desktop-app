@@ -5,7 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   dbQuery: (query: string, params: any[] = []) => ipcRenderer.invoke('db:query', query, params),
   dbRun: (query: string, params: any[] = []) => ipcRenderer.invoke('db:run', query, params),
-  dbGet: (query: string, params: any[] = []) => ipcRenderer.invoke('db:get', query, params)
+  dbGet: (query: string, params: any[] = []) => ipcRenderer.invoke('db:get', query, params),
+  authHash: (password: string) => ipcRenderer.invoke('auth:hash', password)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
