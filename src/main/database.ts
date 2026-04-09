@@ -127,12 +127,19 @@ function initSchema() {
     CREATE TABLE IF NOT EXISTS purchases (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       supplier_id INTEGER NOT NULL,
+      reference_number TEXT,
       date TEXT NOT NULL,
       total REAL NOT NULL,
       paid_status TEXT NOT NULL, /* paid, unpaid */
       FOREIGN KEY(supplier_id) REFERENCES suppliers(id)
     )
   `).run()
+
+  try {
+    db.prepare('ALTER TABLE purchases ADD COLUMN reference_number TEXT').run()
+  } catch (err) {
+    // Column likely exists
+  }
 
   // Purchase Items
   db.prepare(`
