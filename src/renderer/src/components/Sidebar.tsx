@@ -2,6 +2,7 @@ import { LayoutDashboard, Package, ShoppingCart, Truck, Users, Receipt, FileText
 import { Link, useLocation } from 'react-router-dom'
 import { useSettingsStore } from '../store/settingsStore'
 import { useAuthStore } from '../store/authStore'
+import logo from '../assets/logo.png'
 
 export default function Sidebar() {
   const location = useLocation()
@@ -23,8 +24,9 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 bg-slate-900 border-l border-slate-800 text-white h-screen flex flex-col print:hidden shrink-0">
-      <div className="p-6 text-2xl font-bold border-b border-slate-800 flex items-center justify-center text-blue-400">
-        {appName}
+      <div className="p-6 border-b border-slate-800 flex flex-col items-center justify-center gap-3">
+        <img src={logo} alt="الشعار" className="w-16 h-16 object-contain drop-shadow-md" />
+        <span className="text-2xl font-bold text-blue-400">{appName}</span>
       </div>
       <nav className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-3">

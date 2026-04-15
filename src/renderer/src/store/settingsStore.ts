@@ -11,7 +11,7 @@ interface SettingsState {
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
-  appName: 'دفتري',
+  appName: 'دفتـــــــري',
   currencyCode: 'SAR',
   currencySymbol: 'ر.س',
   currencyDecimalPlaces: 2,

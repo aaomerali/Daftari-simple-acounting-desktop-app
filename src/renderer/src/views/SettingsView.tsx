@@ -11,6 +11,8 @@ export default function SettingsView() {
   })
   
   const [loading, setLoading] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
 
   // Sync state if settings change from outside
   useEffect(() => {
@@ -31,9 +33,11 @@ export default function SettingsView() {
         currencyCode: formData.currencyCode,
         currencySymbol: symbol
       })
-      alert('تم حفظ الإعدادات بنجاح')
+      setSuccessMsg('تم حفظ الإعدادات بنجاح')
+      setTimeout(() => setSuccessMsg(''), 3000)
     } catch (e) {
-      alert('خطأ أثناء حفظ الإعدادات')
+      setErrorMsg('خطأ أثناء حفظ الإعدادات')
+      setTimeout(() => setErrorMsg(''), 3000)
     }
     setLoading(false)
   }
@@ -42,6 +46,17 @@ export default function SettingsView() {
     <div className="max-w-2xl mx-auto p-8">
       <h1 className="text-3xl font-bold text-slate-800 mb-8">الإعدادات</h1>
       
+      {successMsg && (
+        <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-6 border border-green-200">
+          {successMsg}
+        </div>
+      )}
+      {errorMsg && (
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-200">
+          {errorMsg}
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">اسم التطبيق</label>

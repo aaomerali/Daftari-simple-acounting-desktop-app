@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Shield, KeyRound, Mail, Loader2 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import logo from '../assets/logo.png'
 
 export default function Login() {
   const login = useAuthStore(state => state.login)
@@ -41,10 +42,10 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" dir="rtl">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
-          <Shield className="w-10 h-10 text-white transform -rotate-3" />
+        <div className="mx-auto w-24 h-24 flex items-center justify-center mb-2">
+          <img src={logo} alt="شعار التطبيق" className="max-w-full max-h-full object-contain drop-shadow-md" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
+        <h2 className="mt-4 text-center text-3xl font-extrabold text-slate-900">
           دفتري
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
