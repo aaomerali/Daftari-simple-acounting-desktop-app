@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Printer, X, Eye, ShoppingCart, Truck } from 'lucide-react'
+import { Printer, X, Eye, ShoppingCart, Truck, Search } from 'lucide-react'
 import { useSettingsStore } from '../store/settingsStore'
 
 export default function Invoices() {
@@ -7,6 +7,12 @@ export default function Invoices() {
   
   const [activeTab, setActiveTab] = useState<'sales' | 'purchases'>('sales')
   
+  // Filters State
+  const [searchQuery, setSearchQuery] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [paymentFilter, setPaymentFilter] = useState('all')
+
   const [salesReport, setSalesReport] = useState<any[]>([])
   const [purchasesReport, setPurchasesReport] = useState<any[]>([])
   
@@ -15,31 +21,90 @@ export default function Invoices() {
   const [invoiceItems, setInvoiceItems] = useState<any[]>([])
 
   const loadSales = async () => {
-    const query = `
+    let query = `
       SELECT sales.*, customers.name as customer_name 
       FROM sales 
       LEFT JOIN customers ON sales.customer_id = customers.id 
-      ORDER BY sales.id DESC LIMIT 100
+      WHERE 1=1
     `
-    const results = await window.api.dbQuery(query)
+    const params: any[] = []
+
+    if (searchQuery) {
+      query += ` AND (sales.id LIKE ? OR customers.name LIKE ?)`
+      params.push(`%${searchQuery}%`, `%${searchQuery}%`)
+    }
+    if (startDate) {
+      query += ` AND date(sales.date) >= ?`
+      params.push(startDate)
+    }
+    if (endDate) {
+      query += ` AND date(sales.date) <= ?`
+      params.push(endDate)
+    }
+    if (paymentFilter !== 'all') {
+      query += ` AND sales.payment_method = ?`
+      params.push(paymentFilter)
+    }
+
+    query += ` ORDER BY sales.id DESC LIMIT 100`
+    const results = await window.api.dbQuery(query, params)
     setSalesReport(results)
   }
 
   const loadPurchases = async () => {
-    const query = `
+    let query = `
       SELECT purchases.*, suppliers.name as supplier_name 
       FROM purchases 
       LEFT JOIN suppliers ON purchases.supplier_id = suppliers.id 
-      ORDER BY purchases.id DESC LIMIT 100
+      WHERE 1=1
     `
-    const results = await window.api.dbQuery(query)
+    const params: any[] = []
+
+    if (searchQuery) {
+      query += ` AND (purchases.id LIKE ? OR purchases.reference_number LIKE ? OR suppliers.name LIKE ?)`
+      params.push(`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`)
+    }
+    if (startDate) {
+      query += ` AND date(purchases.date) >= ?`
+      params.push(startDate)
+    }
+    if (endDate) {
+      query += ` AND date(purchases.date) <= ?`
+      params.push(endDate)
+    }
+    if (paymentFilter !== 'all') {
+      query += ` AND purchases.paid_status = ?`
+      params.push(paymentFilter)
+    }
+
+    query += ` ORDER BY purchases.id DESC LIMIT 100`
+    const results = await window.api.dbQuery(query, params)
     setPurchasesReport(results)
   }
 
+  // Load data immediately on any filter change
   useEffect(() => { 
-    loadSales()
-    loadPurchases()
-  }, [])
+    if (activeTab === 'sales') {
+      loadSales()
+    } else {
+      loadPurchases()
+    }
+  }, [activeTab, searchQuery, startDate, endDate, paymentFilter])
+
+  // Clear filters when tab changes
+  useEffect(() => {
+    setSearchQuery('')
+    setStartDate('')
+    setEndDate('')
+    setPaymentFilter('all')
+  }, [activeTab])
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setStartDate('')
+    setEndDate('')
+    setPaymentFilter('all')
+  }
 
   const viewInvoice = async (record: any, type: 'sales' | 'purchases') => {
     try {
@@ -106,6 +171,53 @@ export default function Invoices() {
           </button>
         </div>
 
+        {/* Filters Toolbar */}
+        <div className="bg-white border border-slate-200 text-sm rounded-xl p-4 mb-6 flex flex-wrap gap-4 items-end shadow-sm shrink-0">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-slate-600 mb-1.5 font-medium">
+               {activeTab === 'sales' ? 'بحث برقم السند أو العميل' : 'بحث برقم السند أو المورد'}
+             </label>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute right-3 top-3 text-slate-400 pointer-events-none" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-3 pr-10 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-shadow"
+                placeholder="ابحث هنا..."
+              />
+            </div>
+          </div>
+          <div>
+             <label className="block text-slate-600 mb-1.5 font-medium">من تاريخ</label>
+             <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+          </div>
+          <div>
+             <label className="block text-slate-600 mb-1.5 font-medium">إلى تاريخ</label>
+             <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+          </div>
+          <div>
+             <label className="block text-slate-600 mb-1.5 font-medium">حالة الدفع</label>
+             {activeTab === 'sales' ? (
+                <select value={paymentFilter} onChange={e => setPaymentFilter(e.target.value)} className="border border-slate-300 bg-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-shadow w-32">
+                  <option value="all">الكل</option>
+                  <option value="cash">كاش</option>
+                  <option value="credit">بطاقة/شبكة</option>
+                  <option value="deferred">آجل</option>
+                </select>
+             ) : (
+                <select value={paymentFilter} onChange={e => setPaymentFilter(e.target.value)} className="border border-slate-300 bg-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-shadow w-32">
+                  <option value="all">الكل</option>
+                  <option value="paid">مدفوعة</option>
+                  <option value="unpaid">آجلة</option>
+                </select>
+             )}
+          </div>
+          <button onClick={clearFilters} className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-lg font-medium transition-colors h-[42px] flex items-center justify-center">
+            تفريغ
+          </button>
+        </div>
+
         {/* Table Content */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex-1 overflow-hidden flex flex-col min-h-0">
           <div className="overflow-auto flex-1">
@@ -143,7 +255,7 @@ export default function Invoices() {
                       {s.payment_method === 'cash' ? 'كاش' : s.payment_method === 'credit' ? 'بطاقة/شبكة' : 'آجل'}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <button onClick={() => viewInvoice(s, 'sales')} className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 w-full">
+                      <button onClick={() => viewInvoice(s, 'sales')} className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 w-full transition-colors">
                         <Eye className="w-4 h-4" /> عرض
                       </button>
                     </td>
@@ -165,7 +277,7 @@ export default function Invoices() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <button onClick={() => viewInvoice(p, 'purchases')} className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 w-full">
+                      <button onClick={() => viewInvoice(p, 'purchases')} className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 w-full transition-colors">
                         <Eye className="w-4 h-4" /> عرض
                       </button>
                     </td>
@@ -173,10 +285,10 @@ export default function Invoices() {
                 ))}
 
                 {(activeTab === 'sales' && salesReport.length === 0) && (
-                  <tr><td colSpan={6} className="text-center py-12 text-slate-400">لا يوجد فواتير مبيعات لعرضها</td></tr>
+                  <tr><td colSpan={6} className="text-center py-12 text-slate-400">لا يوجد نتائج تطابق الفلاتر المحددة</td></tr>
                 )}
                 {(activeTab === 'purchases' && purchasesReport.length === 0) && (
-                  <tr><td colSpan={7} className="text-center py-12 text-slate-400">لا يوجد فواتير مشتريات لعرضها</td></tr>
+                  <tr><td colSpan={7} className="text-center py-12 text-slate-400">لا يوجد نتائج تطابق الفلاتر المحددة</td></tr>
                 )}
               </tbody>
             </table>
@@ -261,7 +373,7 @@ export default function Invoices() {
 
                   <div className="border-t border-slate-800 pt-2 space-y-1 text-sm">
                     {invoiceType === 'sales' ? (
-                      <>
+                       <>
                         <div className="flex justify-between text-xs text-slate-600">
                           <span>الإجمالي قبل الخصم:</span>
                           <span>{(selectedInvoice.total + selectedInvoice.discount).toFixed(2)} {currencySymbol}</span>
