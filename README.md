@@ -31,4 +31,3 @@ npm run dev
 npm run build:win
 \`\`\`
 
-*Note: The default Admin login is `admin@daftari.com` / `daftari123`.*
